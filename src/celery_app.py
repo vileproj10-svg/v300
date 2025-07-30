@@ -17,7 +17,7 @@ celery_app = Celery(
     'arqv30_enhanced',
     broker=os.getenv('REDIS_URL', 'redis://localhost:6379/0'),
     backend=os.getenv('REDIS_URL', 'redis://localhost:6379/0'),
-    include=['src.tasks.analysis_tasks']
+    include=['tasks.analysis_tasks']
 )
 
 # Configurações do Celery
