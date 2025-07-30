@@ -6,8 +6,14 @@ Configuração do Celery para processamento assíncrono
 """
 
 import os
+import sys
 from celery import Celery
 from dotenv import load_dotenv
+
+# Adiciona diretório atual ao path para imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
 # Carrega variáveis de ambiente
 load_dotenv()
@@ -34,8 +40,8 @@ celery_app.conf.update(
     worker_max_tasks_per_child=1000,
     result_expires=3600,  # 1 hora
     task_routes={
-        'src.tasks.analysis_tasks.process_market_analysis': {'queue': 'analysis'},
-        'src.tasks.analysis_tasks.validate_apis': {'queue': 'validation'},
+        'tasks.analysis_tasks.process_market_analysis': {'queue': 'analysis'},
+        'tasks.analysis_tasks.validate_apis': {'queue': 'validation'},
     }
 )
 

@@ -23,11 +23,21 @@ REM Cria ambiente virtual se não existir
 if not exist "venv" (
     echo 🔄 Criando ambiente virtual...
     python -m venv venv
+    if errorlevel 1 (
+        echo ❌ ERRO: Falha ao criar ambiente virtual!
+        pause
+        exit /b 1
+    )
 )
 
 REM Ativa ambiente virtual
 echo 🔄 Ativando ambiente virtual...
 call venv\Scripts\activate.bat
+if errorlevel 1 (
+    echo ❌ ERRO: Falha ao ativar ambiente virtual!
+    pause
+    exit /b 1
+)
 
 REM Atualiza pip
 echo 🔄 Atualizando pip...
@@ -36,6 +46,12 @@ python -m pip install --upgrade pip
 REM Instala dependências principais
 echo 🔄 Instalando dependências principais...
 pip install -r requirements.txt
+if errorlevel 1 (
+    echo ❌ ERRO: Falha ao instalar dependências principais!
+    echo Verifique sua conexão com a internet.
+    pause
+    exit /b 1
+)
 
 REM Instala dependências específicas que podem faltar
 echo 🔄 Instalando dependências específicas...
@@ -50,6 +66,16 @@ if not exist "src\uploads" mkdir src\uploads
 if not exist "src\cache" mkdir src\cache
 if not exist "src\logs" mkdir src\logs
 if not exist "logs" mkdir logs
+if not exist "cache" mkdir cache
+
+REM Verifica se arquivo .env existe
+if not exist ".env" (
+    echo ⚠️ AVISO: Arquivo .env não encontrado!
+    echo Configure suas chaves de API no arquivo .env
+    echo.
+) else (
+    echo ✅ Arquivo .env encontrado
+)
 
 REM Testa imports críticos
 echo 🧪 Testando imports críticos...
@@ -98,17 +124,21 @@ echo ========================================
 echo.
 echo 📋 PRÓXIMOS PASSOS:
 echo.
-echo 1. Para iniciar a aplicação:
+echo 1. Para iniciar a aplicação principal:
 echo    run.bat
 echo.
 echo 2. Para usar funcionalidades assíncronas (opcional):
-echo    start_celery.bat
+echo    start_celery.bat (em outro terminal)
 echo.
-echo 3. Acesse: http://localhost:5000
+echo 3. Para monitoramento Celery (opcional):
+echo    start_flower.bat (em outro terminal)
+echo.
+echo 4. Acesse: http://localhost:5000
 echo.
 echo ⚠️ IMPORTANTE:
 echo - Redis é necessário apenas para funcionalidades assíncronas
 echo - A aplicação funciona sem Redis em modo síncrono
 echo - Todas as APIs estão configuradas no arquivo .env
+echo - Mantenha os terminais abertos durante o uso
 echo.
 pause

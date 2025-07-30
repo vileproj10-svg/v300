@@ -297,16 +297,23 @@ def main():
     try:
         # Valida APIs no startup
         logger.info("🔍 Validando APIs no startup...")
-        validation_results = api_validator.validate_all_apis()
+        try:
+            validation_results = api_validator.validate_all_apis()
+        except Exception as e:
+            logger.warning(f"⚠️ Erro na validação de APIs: {str(e)}")
+            validation_results = {'overall_status': 'unknown', 'errors': [str(e)]}
         
         if not api_validator.is_system_healthy():
             logger.error("❌ Sistema não está saudável - APIs críticas inválidas")
             logger.error("Configure as APIs necessárias antes de continuar")
-            for error in validation_results['errors']:
+            for error in validation_results.get('errors', []):
                 logger.error(f"  - {error}")
             # Continua mesmo com erros para permitir configuração
         
-        logger.info(f"📊 Status das APIs: {api_validator.get_validation_summary()}")
+        try:
+            logger.info(f"📊 Status das APIs: {api_validator.get_validation_summary()}")
+        except Exception as e:
+            logger.warning(f"⚠️ Erro ao obter resumo de validação: {str(e)}")
         
         # Configura handlers de sinal
         setup_signal_handlers()

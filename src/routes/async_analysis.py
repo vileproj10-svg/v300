@@ -13,13 +13,9 @@ try:
     from tasks.analysis_tasks import process_market_analysis, validate_apis
     CELERY_AVAILABLE = True
 except ImportError:
-    try:
-        from src.tasks.analysis_tasks import process_market_analysis, validate_apis
-        CELERY_AVAILABLE = True
-    except ImportError:
-        CELERY_AVAILABLE = False
-        process_market_analysis = None
-        validate_apis = None
+    CELERY_AVAILABLE = False
+    process_market_analysis = None
+    validate_apis = None
 
 from celery.result import AsyncResult
 from database import db_manager

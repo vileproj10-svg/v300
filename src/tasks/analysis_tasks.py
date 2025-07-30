@@ -13,10 +13,14 @@ import json
 from datetime import datetime
 from typing import Dict, Any, List
 from celery import current_task
-from celery_app import celery_app
 
-# Adiciona src ao path
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+# Adiciona diretório pai ao path para imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+from celery_app import celery_app
 
 from services.ai_manager import ai_manager
 from services.production_search_manager import production_search_manager
