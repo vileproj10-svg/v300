@@ -8,7 +8,6 @@ Validador de chaves de API no startup
 import os
 import logging
 import requests
-from datetime import datetime
 from typing import Dict, Any, List
 import google.generativeai as genai
 
